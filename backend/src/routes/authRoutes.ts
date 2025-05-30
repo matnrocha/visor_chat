@@ -2,13 +2,20 @@ import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
 import { AuthService } from '../services/AuthService';
 import { UserRepository } from '../repositories/UserRepository';
+import { authenticateToken } from '../middlewares/authMiddleware';
 
-const AuthRouter = Router();
-const userRepository = new UserRepository();
-const authService = new AuthService(userRepository);
-const authController = new AuthController(authService);
+export const createAuthRoutes = () => {
+  const router = Router();
+  const userRepository = new UserRepository();
+  const authService = new AuthService(userRepository);
+  const authController = new AuthController(authService);
 
-AuthRouter.post('/register', authController.register.bind(authController));
-AuthRouter.post('/login', authController.login.bind(authController));
+  router.post('/register', authController.register);
+  router.post('/login', authController.login);
+  router.get('/me', authenticateToken, authController.getCurrentUser);
+  router.post('/logout', authenticateToken, authController.logout);
 
-export default AuthRouter;
+  return router;
+};
+
+export default createAuthRoutes();

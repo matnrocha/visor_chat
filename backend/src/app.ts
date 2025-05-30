@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/authRoutes';
+import { userRouter } from './routes/userRoutes';
 // import { errorHandler } from './middlewares/errorHandler';
 // import { notFoundHandler } from './middlewares/notFoundHandler';
 import { connectToDatabase } from './config/database';
@@ -23,6 +24,7 @@ class App {
 
   private setupRoutes(): void {
     this.express.use('/api/auth', authRouter);
+    this.express.use('/api/users', userRouter);
   }
 
   private setupErrorHandling(): void {
