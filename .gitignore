@@ -1,0 +1,46 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.pid
+*.seed
+
+# Docker
+*.tgz
+docker-compose.override.yml
+
+# Optional backups
+*.bak
+*.tmp
+
+# Test outputs
+jest-html-reporters-*
+
+# MongoDB local volume
+mongo-data/
+
