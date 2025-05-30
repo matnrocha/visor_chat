@@ -3,12 +3,18 @@ import { AuthController } from '../controllers/AuthController';
 import { AuthService } from '../services/AuthService';
 import { UserRepository } from '../repositories/UserRepository';
 
-const AuthRouter = Router();
-const userRepository = new UserRepository();
-const authService = new AuthService(userRepository);
-const authController = new AuthController(authService);
+export const createAuthRoutes = () => {
+  const router = Router();
+  const userRepository = new UserRepository();
+  const authService = new AuthService(userRepository);
+  const authController = new AuthController(authService);
 
-AuthRouter.post('/register', authController.register.bind(authController));
-AuthRouter.post('/login', authController.login.bind(authController));
+  router.post('/register', authController.register);
+  router.post('/login', authController.login);
+  router.get('/me', authController.getCurrentUser);
+  router.post('/logout', authController.logout);
 
-export default AuthRouter;
+  return router;
+};
+
+export default createAuthRoutes();
