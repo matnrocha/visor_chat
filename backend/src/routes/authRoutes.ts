@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
 import { AuthService } from '../services/AuthService';
 import { UserRepository } from '../repositories/UserRepository';
+import { authenticateToken } from '../middlewares/authMiddleware';
 
 export const createAuthRoutes = () => {
   const router = Router();
@@ -11,8 +12,8 @@ export const createAuthRoutes = () => {
 
   router.post('/register', authController.register);
   router.post('/login', authController.login);
-  router.get('/me', authController.getCurrentUser);
-  router.post('/logout', authController.logout);
+  router.get('/me', authenticateToken, authController.getCurrentUser);
+  router.post('/logout', authenticateToken, authController.logout);
 
   return router;
 };

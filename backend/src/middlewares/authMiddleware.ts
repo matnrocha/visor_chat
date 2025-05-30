@@ -1,26 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
+interface JwtPayload {
+  userId: string;
+}
+
+export const authenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
   if (!token) {
-    res.status(401).json({ error: 'Token não fornecido' });
-    return;
+    res.status(401).json({ error: 'Token missing' });
+    return; 
   }
 
-  if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined');
-  }
+  jwt.verify(token, process.env.JWT_SECRET || 'your_secret', (err, decoded) => {
+    if (err) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;  
+    }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
-    
-    req.userId = decoded.userId;
-    
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Token inválido' });
-    return;
-  }
+    const payload = decoded as JwtPayload;
+    req.userId = payload.userId;
+
+    next(); 
+  });
 };
