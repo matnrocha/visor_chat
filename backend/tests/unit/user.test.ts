@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import jwt from 'jsonwebtoken';
 
-import { app } from '../src/app';
-import { getEnvOrThrow } from '../src/config/env';
+import { app } from '../../src/app';
+import { getEnvOrThrow } from '../../src/config/env';
 
 const JWT_SECRET = getEnvOrThrow('JWT_SECRET');
 
