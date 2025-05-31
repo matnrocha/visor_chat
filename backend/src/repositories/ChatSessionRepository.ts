@@ -55,4 +55,12 @@ export class ChatSessionRepository {
     const result = await ChatSessionModel.deleteOne({ _id: id });
     return result.deletedCount > 0;
   }
+
+  async updateModel(id: string, modelType: string): Promise<boolean> {
+    const result = await ChatSessionModel.updateOne(
+        { _id: id },
+        { modelType, updatedAt: new Date() }
+    );
+    return result.modifiedCount > 0;
+}
 }

@@ -14,7 +14,14 @@ export const createChatRoutes = () => {
 
   router.use(authenticateToken);
 
+  // Session Routes
+  router.get('/', chatController.listSessions);
   router.post('/', chatController.createSession);
+  router.get('/:id', chatController.getSession);
+  router.patch('/:id', chatController.updateSessionTitle);
+  router.delete('/:id', chatController.deleteSession);
+
+  // Message Routes
   router.post('/:sessionId/messages', chatController.sendMessage);
   router.get('/:sessionId/messages', chatController.getMessages);
 
