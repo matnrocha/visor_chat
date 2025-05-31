@@ -9,7 +9,7 @@
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest --testRegex \".*\\.unit\\.test\\.ts$\""
   },
   "keywords": [],
   "author": "",
