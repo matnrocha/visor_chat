@@ -13,19 +13,50 @@ export class ChatService {
         private sessionRepository: ChatSessionRepository,
         private messageRepository: MessageRepository,
         private llmProvider: LLMProvider = LLMProvider.GEMINI
-        ) {
+    ) {
         this.llm = LLMFactory.create(llmProvider);
-        }
+    }
 
-  async createSession(userId: string, modelType: string): Promise<ChatSession> {
-    const session = new ChatSession(
-      '', // ID gerado pelo MongoDB
-      userId,
-      modelType,
-      `New ${modelType} Chat`
-    );
-    return this.sessionRepository.create(session);
-  }
+    async createSession(userId: string, modelType: string): Promise<ChatSession> {
+        const session = new ChatSession(
+          '', // ID gerado pelo MongoDB
+          userId,
+          modelType,
+          `New ${modelType} Chat`
+        );
+        return this.sessionRepository.create(session);
+      }
+
+    // List all sessions for user
+    async listUserSessions(userId: string): Promise<ChatSession[]> {
+        return this.sessionRepository.findByUserId(userId);
+    }
+
+    // Get session details
+    async getSession(sessionId: string, userId: string): Promise<ChatSession> {
+        const session = await this.sessionRepository.findById(sessionId);
+        if (!session || session.userId !== userId) {
+            throw new Error('Session not found or access denied');
+        }
+        return session;
+    }
+
+    async updateSessionTitle(sessionId: string, userId: string, title: string): Promise<boolean> {
+        const session = await this.sessionRepository.findById(sessionId);
+        if (!session || session.userId !== userId) {
+            throw new Error('Session not found or access denied');
+        }
+        return this.sessionRepository.updateTitle(sessionId, title);
+    }
+
+    async deleteSession(sessionId: string, userId: string): Promise<boolean> {
+        const session = await this.sessionRepository.findById(sessionId);
+        if (!session || session.userId !== userId) {
+            throw new Error('Session not found or access denied');
+        }
+        return this.sessionRepository.delete(sessionId);
+    }
+
 
     async sendMessage(sessionId: string, userId: string, content: string
     ): Promise<Message> {
@@ -79,4 +110,5 @@ export class ChatService {
         }
         return this.messageRepository.findBySessionId(sessionId);
     }
+
 }

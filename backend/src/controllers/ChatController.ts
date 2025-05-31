@@ -25,6 +25,93 @@ export class ChatController {
     }
   };
 
+  // List all sessions for current user
+  listSessions = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const sessions = await this.chatService.listUserSessions(req.userId!);
+      res.json(sessions.map(s => ({
+        id: s.id,
+        title: s.title,
+        modelType: s.modelType,
+        createdAt: s.createdAt,
+        updatedAt: s.updatedAt
+      })));
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+  // Get session details
+  getSession = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const session = await this.chatService.getSession(
+        req.params.id,
+        req.userId!
+      );
+      res.json({
+        id: session.id,
+        title: session.title,
+        modelType: session.modelType,
+        createdAt: session.createdAt,
+        updatedAt: session.updatedAt
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+  // Update session title
+  updateSessionTitle = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const success = await this.chatService.updateSessionTitle(
+        req.params.id,
+        req.userId!,
+        req.body.title
+      );
+      if (success) {
+        res.json({ message: 'Session title updated successfully' });
+      } else {
+        res.status(404).json({ error: 'Session not found or update failed' });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+  // Delete session
+  deleteSession = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const success = await this.chatService.deleteSession(
+        req.params.id,
+        req.userId!
+      );
+      if (success) {
+        res.json({ message: 'Session deleted successfully' });
+      } else {
+        res.status(404).json({ error: 'Session not found or delete failed' });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+
   sendMessage = async (req: Request, res: Response): Promise<void> => {
     try {
       const message = await this.chatService.sendMessage(

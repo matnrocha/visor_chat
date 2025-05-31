@@ -6,6 +6,7 @@ import { chatRouter } from './routes/chatRoutes';
 // import { errorHandler } from './middlewares/errorHandler';
 // import { notFoundHandler } from './middlewares/notFoundHandler';
 import { connectToDatabase } from './config/database';
+import { modelRouter } from './routes/modelRoutes';
 
 class App {
   public express: express.Application;
@@ -27,6 +28,7 @@ class App {
     this.express.use('/api/auth', authRouter);
     this.express.use('/api/users', userRouter);
     this.express.use('/api/sessions', chatRouter);
+    this.express.use('/api/models', modelRouter);
   }
 
   private setupErrorHandling(): void {

@@ -5,6 +5,11 @@ interface JwtPayload {
   userId: string;
 }
 
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in environment variables.');
+}
+
 export const authenticateToken = (
   req: Request,
   res: Response,
@@ -18,7 +23,7 @@ export const authenticateToken = (
     return; 
   }
 
-  jwt.verify(token, process.env.JWT_SECRET || 'your_secret', (err, decoded) => {
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
       res.status(401).json({ error: 'Invalid token' });
       return;  

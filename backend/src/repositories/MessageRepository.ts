@@ -2,6 +2,21 @@ import { Message } from '../entities/Message';
 import { MessageModel } from '../models/MessageModel';
 
 export class MessageRepository {
+
+  async findById(id: string): Promise<Message | null> {
+    const message = await MessageModel.findById(id);
+    if (!message) return null;
+    return new Message(
+        message._id.toString(),
+        message.sessionId,
+        message.content,
+        message.role,
+        message.modelType,
+        message.timestamp
+    );
+}
+
+
   async findBySessionId(sessionId: string): Promise<Message[]> {
     const messages = await MessageModel.find({ sessionId });
     return messages.map(m => new Message(
@@ -29,10 +44,5 @@ export class MessageRepository {
       newMessage.modelType,
       newMessage.timestamp
     );
-  }
-
-  async delete(id: string): Promise<boolean> {
-    const result = await MessageModel.deleteOne({ _id: id });
-    return result.deletedCount > 0;
   }
 }
