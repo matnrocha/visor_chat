@@ -1,0 +1,70 @@
+import { Request, Response } from 'express';
+import { ChatService } from '../services/ChatService';
+
+export class ChatController {
+  constructor(private chatService: ChatService) {}
+
+  createSession = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const session = await this.chatService.createSession(
+        req.userId!, // Adicionado pelo authMiddleware
+        req.body.modelType
+      );
+      res.status(201).json({
+        id: session.id,
+        title: session.title,
+        modelType: session.modelType,
+        createdAt: session.createdAt
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+  sendMessage = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const message = await this.chatService.sendMessage(
+        req.params.sessionId,
+        req.userId!, // Adicionado pelo authMiddleware
+        req.body.content
+      );
+      res.status(201).json({
+        id: message.id,
+        content: message.content,
+        role: message.role,
+        timestamp: message.timestamp
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+
+  getMessages = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const messages = await this.chatService.getSessionMessages(
+        req.params.sessionId,
+        req.userId! // Adicionado pelo authMiddleware
+      );
+      res.json(messages.map(m => ({
+        id: m.id,
+        content: m.content,
+        role: m.role,
+        timestamp: m.timestamp
+      })));
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: 'Unexpected error' });
+      }
+    }
+  };
+}
