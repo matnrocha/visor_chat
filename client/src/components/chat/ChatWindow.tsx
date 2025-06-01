@@ -25,7 +25,7 @@ export function ChatWindow({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Carrega mensagens existentes ao montar o componente
+  // Carrega mensagens ao montar o componente
   useEffect(() => {
     const loadMessages = async () => {
       try {
@@ -39,13 +39,9 @@ export function ChatWindow({
         });
       }
     };
+    loadMessages();
+  }, [sessionId]);
 
-    if (sessionId) {
-      loadMessages();
-    }
-  }, [sessionId, toast]);
-
-  // Rolagem automática para a última mensagem
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -57,6 +53,7 @@ export function ChatWindow({
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
+    // Cria ID temporário para a mensagem do usuário
     const tempId = Date.now().toString();
     const userMessage: Message = {
       id: tempId,
@@ -67,27 +64,39 @@ export function ChatWindow({
       timestamp: new Date().toISOString(),
     };
 
-    // Atualização otimista
-    setMessages((prev) => [...prev, userMessage]);
+    // Atualização otimista - mostra a mensagem do usuário imediatamente
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await ChatAPI.sendMessage(sessionId, input);
+      // Envia a mensagem e recebe a resposta da AI
+      const aiResponse = await ChatAPI.sendMessage(sessionId, input);
       
-      // Substitui a mensagem temporária pela resposta real do servidor
-      setMessages((prev) => [
-        ...prev.filter(m => m.id !== tempId),
-        response
+      // Atualiza o estado com ambas as mensagens
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== tempId), // Remove a temporária
+        {
+          ...userMessage,
+          id: `user-${Date.now()}`, // Novo ID para a mensagem do usuário
+        },
+        {
+          id: `ai-${Date.now()}`,
+          sessionId,
+          content: aiResponse.content,
+          role: 'model',
+          modelType,
+          timestamp: new Date().toISOString(),
+        }
       ]);
     } catch (error) {
+      // Remove a mensagem temporária em caso de erro
+      setMessages(prev => prev.filter(m => m.id !== tempId));
       toast({
         title: 'Error',
         description: 'Failed to send message',
         variant: 'destructive',
       });
-      // Remove a mensagem otimista em caso de erro
-      setMessages((prev) => prev.filter(m => m.id !== tempId));
     } finally {
       setIsLoading(false);
     }
