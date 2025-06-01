@@ -6,6 +6,16 @@ export const ChatAPI = {
     const response = await apiClient.post('/sessions', { modelType });
     return response.data;
   },
+
+  renameSession: async (sessionId: string, newTitle: string) => {
+    const response = await apiClient.patch(`/sessions/${sessionId}`, { title: newTitle });
+    return response.data;
+  },
+
+  deleteSession: async (sessionId: string) => {
+    const response = await apiClient.delete(`/sessions/${sessionId}`);
+    return response.data;
+  },
   
   sendMessage: async (sessionId: string, content: string) => {
     const response = await apiClient.post(`/sessions/${sessionId}/messages`, { content });

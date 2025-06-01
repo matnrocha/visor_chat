@@ -5,7 +5,7 @@ export interface ChatSession {
     title: string;
     createdAt?: string;
     updatedAt?: string;
-  }
+  };
   
   export interface Message {
     id: string;
@@ -14,4 +14,4 @@ export interface ChatSession {
     role: 'user' | 'model';
     modelType: string;
     timestamp?: string;
-  }
+  };
