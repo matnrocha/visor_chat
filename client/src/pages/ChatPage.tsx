@@ -1,114 +1,203 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from 'react';
-import { ChatSession } from '../types/chat';
-import { ChatAPI } from '../api/chat';
-import { ChatWindow } from '../components/chat/ChatWindow';
-import { Button } from '../components/ui/button';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '../components/ui/resizable';
-import { PlusIcon } from '@radix-ui/react-icons';
-import { useToast } from '../components/ui/use-toast';
+// src/pages/ChatPage.tsx
+import { useEffect, useState } from "react";
+import { ChatAPI } from "@/api/chat";
+import { ChatSession, Message } from "@/types/chat";
+import { ChatSidebar } from "@/components/ChatSidebar";
+import { ChatWindow } from "@/components/ChatWindow";
+import { useToast } from "@/components/ui/use-toast";
 
 export function ChatPage() {
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [activeSession, setActiveSession] = useState<string | null>(null);
-  const [isCreatingSession, setIsCreatingSession] = useState(false);
   const { toast } = useToast();
 
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+
+  // Carregar sessões no mount
   useEffect(() => {
-    const fetchSessions = async () => {
+    const loadSessions = async () => {
       try {
         const data = await ChatAPI.getSessions();
         setSessions(data);
-        if (data.length > 0 && !activeSession) {
-          setActiveSession(data[0].id);
+        if (data.length && !activeSessionId) {
+          setActiveSessionId(data[0].id);
         }
-      } catch (error) {
+      } catch {
         toast({
-          title: 'Error',
-          description: 'Failed to load chat sessions',
-          variant: 'destructive',
+          title: "Erro",
+          description: "Falha ao carregar sessões",
+          variant: "destructive",
         });
       }
     };
 
-    fetchSessions();
+    loadSessions();
   }, []);
 
+  // Carregar mensagens da sessão ativa
+  useEffect(() => {
+    if (!activeSessionId) {
+      setMessages([]);
+      return;
+    }
+
+    const loadMessages = async () => {
+      setIsLoadingMessages(true);
+      try {
+        const data = await ChatAPI.getMessages(activeSessionId);
+        setMessages(data);
+      } catch {
+        toast({
+          title: "Erro",
+          description: "Falha ao carregar mensagens",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    loadMessages();
+  }, [activeSessionId]);
+
+  // Criar nova sessão
   const handleCreateSession = async () => {
     setIsCreatingSession(true);
     try {
-      const newSession = await ChatAPI.createSession('default');
+      const newSession = await ChatAPI.createSession("default");
       setSessions((prev) => [newSession, ...prev]);
-      setActiveSession(newSession.id);
-    } catch (error) {
+      setActiveSessionId(newSession.id);
+    } catch {
       toast({
-        title: 'Error',
-        description: 'Failed to create new chat session',
-        variant: 'destructive',
+        title: "Erro",
+        description: "Falha ao criar sessão",
+        variant: "destructive",
       });
     } finally {
       setIsCreatingSession(false);
     }
   };
 
+  const handleRenameSession = async (sessionId: string, newTitle: string) => {
+    try {
+      console.log("Renomear id:", sessionId, "com título:", newTitle.trim());
+      const updatedSession = await ChatAPI.renameSession(sessionId, newTitle);
+      setSessions((prev) =>
+        prev.map((s) => (s.id === sessionId ? updatedSession : s))
+      );
+      toast({
+        title: "Sucesso",
+        description: "Sessão renomeada com sucesso",
+      });
+    } catch {
+      toast({
+        title: "Erro",
+        description: "Falha ao renomear sessão",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    try {
+      await ChatAPI.deleteSession(sessionId);
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+
+      // Se sessão ativa for a deletada, muda para outra ou null
+      if (activeSessionId === sessionId) {
+        const remaining = sessions.filter((s) => s.id !== sessionId);
+        setActiveSessionId(remaining.length > 0 ? remaining[0].id : null);
+      }
+
+      toast({
+        title: "Sucesso",
+        description: "Sessão deletada com sucesso",
+      });
+    } catch {
+      toast({
+        title: "Erro",
+        description: "Falha ao deletar sessão",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Enviar mensagem
+  const handleSendMessage = async (content: string) => {
+    if (!activeSessionId) return;
+
+    setIsSendingMessage(true);
+
+    // Cria mensagem do usuário temporária para renderização imediata
+    const tempId = `temp-${Date.now()}`;
+    const userMessage: Message = {
+      id: tempId,
+      sessionId: activeSessionId,
+      content,
+      role: "user",
+      modelType: "default",
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const aiResponse = await ChatAPI.sendMessage(activeSessionId, content);
+
+      setMessages((prev) => [
+        ...prev.filter((m) => m.id !== tempId),
+        userMessage,
+        {
+          id: `ai-${Date.now()}`,
+          sessionId: activeSessionId,
+          content: aiResponse.content,
+          role: "model",
+          modelType: "default",
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+    } catch {
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
+      toast({
+        title: "Erro",
+        description: "Falha ao enviar mensagem",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  // Renomear e deletar funções podem ficar simples, você pode incluir se quiser.
+
   return (
-    <div className="w-screen h-screen bg-background">
-      <ResizablePanelGroup direction="horizontal" className="h-full">
-        <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
-          <div className="h-full p-4 border-r">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Chats</h2>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={handleCreateSession}
-                disabled={isCreatingSession}
-              >
-                <PlusIcon className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="space-y-1">
-              {sessions.map((session) => (
-                <Button
-                  key={session.id}
-                  variant={activeSession === session.id ? 'secondary' : 'ghost'}
-                  className="justify-start w-full"
-                  onClick={() => setActiveSession(session.id)}
-                >
-                  <span className="truncate">{session.title}</span>
-                </Button>
-              ))}
-            </div>
+    <div className="flex w-screen h-screen bg-background">
+      <ChatSidebar
+        sessions={sessions}
+        activeSession={activeSessionId}
+        onSessionSelect={setActiveSessionId}
+        onRename={handleRenameSession}
+        onDelete={handleDeleteSession}
+        onCreateSession={handleCreateSession}
+        isCreatingSession={isCreatingSession}
+      />
+
+      <main className="flex flex-col flex-1">
+        {activeSessionId ? (
+          <ChatWindow
+            messages={messages}
+            onSend={handleSendMessage}
+            isLoading={isSendingMessage || isLoadingMessages}
+          />
+        ) : (
+          <div className="flex items-center justify-center flex-1 text-muted-foreground">
+            Selecione ou crie uma nova conversa.
           </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={80}>
-          <div className="h-full">
-            {activeSession ? (
-              <ChatWindow sessionId={activeSession} />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <div className="space-y-2 text-center">
-                  <h3 className="text-lg font-medium">No active chat</h3>
-                  <p className="text-muted-foreground">
-                    Select a chat or create a new one
-                  </p>
-                  <Button
-                    onClick={handleCreateSession}
-                    disabled={isCreatingSession}
-                  >
-                    New Chat
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        )}
+      </main>
     </div>
   );
 }
