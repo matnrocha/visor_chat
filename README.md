@@ -103,7 +103,7 @@ The application emphasizes scalability, testability, and clean code practices, l
     ```bash
     docker-compose up --build
     ```
-
+5. Test the application in `http://localhost:5173/`
 ---
 
 In case of any questions about the project or dificulties on how to run, please get in touch:
