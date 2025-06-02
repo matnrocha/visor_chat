@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useChat } from '../hooks/useChat';
 import { useAuth } from '../hooks/useAuth';
 import { 
@@ -24,9 +24,22 @@ const ChatPage = () => {
   
   const { user, handleLogout } = useAuth();
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'auto', // direto
+      block: 'end'
+    });
+  };
 
   
 
@@ -52,6 +65,8 @@ const ChatPage = () => {
               {messages.map(msg => (
                 <ChatBubble key={msg.id} message={msg} />
               ))}
+              {/* Elemento vazio para scroll */}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
