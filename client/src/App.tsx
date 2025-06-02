@@ -1,18 +1,35 @@
-import { Button } from "./components/ui/button";
-import { Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ChatPage from "./pages/ChatPage";
+import { authService } from "./services/authService";
+import type { JSX } from "react";
 
-export default function App() {
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" />;
+  }
+  return children;
+};
+
+function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-gray-50">
-      <h1 className="text-3xl font-bold">Bem-vindo ao App</h1>
-      <div className="flex gap-4">
-        <Button asChild>
-          <Link to="/login">Login</Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link to="/register">Registrar</Link>
-        </Button>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+export default App;
