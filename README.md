@@ -14,7 +14,6 @@ This project is a full-stack chat application developed for the Visor.ai technic
 
 The application emphasizes scalability, testability, and clean code practices, laying a solid foundation for long-term growth and maintainability.
 
----
 
 
 ## Application explanation
@@ -52,15 +51,14 @@ The application emphasizes scalability, testability, and clean code practices, l
 * `Models`: Define MongoDB data structures;
 
 2. Implicit Dependency Injection
-* Services are imported directly into controllers
-* Facilitates mocking in tests
+* Services are imported directly into controllers;
+* Facilitates mocking in tests;
 
 3. Automated Testing
-* Jest + Supertest
-* Testes de integração com MongoDB in-memory
+* `Jest + Supertest`: runnable using `npm test`in root;
 
 4. Routes Documentation
-* See Swagger Documentation in `http://localhost:3000/api-docs`
+* See Swagger Documentation in `http://localhost:3000/api-docs`;
 
 
 ### Some Frontend Structure Details
@@ -82,10 +80,9 @@ The application emphasizes scalability, testability, and clean code practices, l
 ### Prerequisites
 
 - Docker
-    *If you're on a Windows environment, run Docker Desktop.
 
 - [Get a Gemini API Key](https://aistudio.google.com/app/apikey)
-    On the website, click the "Create API Key" button, copy it, and save it.
+    - On the website, click the "Create API Key" button, copy it, and save it.
 
 
 ### Setup Steps
@@ -100,7 +97,7 @@ The application emphasizes scalability, testability, and clean code practices, l
     cp backend/.env.example backend/.env
     cp client/.env.example client/.env
     ```
-3. In the backend, insert your `GEMINI_API_KEY`
+3. In the backend `.env`, insert your `GEMINI_API_KEY`
 
 4. Run the containers: 
     ```bash
@@ -109,7 +106,9 @@ The application emphasizes scalability, testability, and clean code practices, l
 
 ---
 
-iN 
+In case of any questions about the project or dificulties on how to run, please get in touch:
+mateusanroc@gmail.com
+
 
 
 
