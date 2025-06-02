@@ -56,8 +56,26 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               <AvatarImage src={logo} />
             </Avatar>
             <div className="overflow-hidden">
-              <h3 className="font-medium text-gray-800 truncate">{user.name}</h3>
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                <h3 className="font-medium text-gray-800 truncate">
+                  {(() => {
+                    const firstName = user.name.split(' ')[0];
+                    if (firstName.length <= 12) {
+                      return firstName;
+                    } else {
+                      return firstName.slice(0, 9) + '...';
+                    }
+                  })()}
+                </h3>
+              <p className="text-xs text-gray-500 truncate">
+                  {(() => {
+                    const email = user.email.split('@')[0];
+                    if (email.length <= 15) {
+                      return email;
+                    } else {
+                      return email.slice(0, 15) + '...';
+                    }
+                  })()}
+              </p>
             </div>
           </div>
           <button 
