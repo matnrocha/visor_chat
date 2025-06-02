@@ -26,6 +26,7 @@ The application emphasizes scalability, testability, and clean code practices, l
 - Messages, Users, Sessions are stored in database.
 
 - The front-end automatically updates the message history after each interaction.
+- Users can delete and change the title of the chats.
 
 ## Tech Stack
 
