@@ -137,7 +137,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         <HoverCard>
           <HoverCardTrigger asChild>
             <div className="flex items-center gap-3 pl-2 cursor-pointer">
-              <p className="text-xs text-center text-gray-500">developed by Mateus Rocha</p>
+              <p className="text-xs text-center text-gray-500 hover:underline">developed by Mateus Rocha</p>
             </div>
           </HoverCardTrigger>
           <HoverCardContent className="w-60" side="top" align="start">
