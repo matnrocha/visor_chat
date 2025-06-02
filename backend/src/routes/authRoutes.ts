@@ -136,6 +136,8 @@ export const createAuthRoutes = () => {
    *   get:
    *     summary: Retorna o usuário autenticado
    *     description: Retorna os dados do usuário autenticado com base no token JWT.
+   *     tags:
+   *       - Auth
    *     security:
    *       - bearerAuth: []
    *     responses:
