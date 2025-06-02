@@ -8,7 +8,7 @@ export const authService = {
     email: string, 
     password: string
     ) {
-    const res = await axios.post("/api/auth/login", { email, password });
+    const res = await axios.post("/auth/login", { email, password });
     localStorage.setItem("token", res.data.token);
   },
 
@@ -17,7 +17,7 @@ export const authService = {
     email: string,
     password: string
     ) {
-    await axios.post("/api/auth/register", { name, email, password });
+    await axios.post("/auth/register", { name, email, password });
   },
 
   logout() {
