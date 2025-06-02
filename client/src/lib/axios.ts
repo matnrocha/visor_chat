@@ -1,8 +1,9 @@
 import axios from "axios";
 import { authService } from "../services/authService";
 
+
 const apiClient = axios.create({
-  baseURL: "http://localhost:3000/api", // backend
+  baseURL: "http://localhost:3000/api",
   headers: {
     "Content-Type": "application/json",
   },

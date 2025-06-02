@@ -9,6 +9,8 @@ export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+
+
   const fetchSessions = useCallback(async () => {
     try {
       const res = await ChatAPI.getSessions();
@@ -17,6 +19,8 @@ export const useChat = () => {
       console.error('Error fetching sessions', error);
     }
   }, []);
+
+
 
   const fetchMessages = useCallback(async (sessionId: string) => {
     try {
@@ -33,6 +37,8 @@ export const useChat = () => {
     }
   }, []);
 
+
+
   const selectSession = useCallback(async (session: ChatSession | null) => {
     setSelectedSession(session);
     
@@ -44,6 +50,8 @@ export const useChat = () => {
       localStorage.removeItem('selectedSessionId');
     }
   }, [fetchMessages]);
+
+
 
   const deleteSession = useCallback(async (sessionId: string) => {
     try {
@@ -59,6 +67,8 @@ export const useChat = () => {
       console.error("Error deleting session", error);
     }
   }, [selectedSession]);
+
+
 
   const renameSession = useCallback(async (sessionId: string, newTitle: string) => {
     if (!newTitle || !newTitle.trim()) return;
@@ -80,6 +90,8 @@ export const useChat = () => {
     }
   }, [selectedSession]);
 
+
+
   const createNewChat = useCallback(async () => {
     try {
       const res = await ChatAPI.createSession('gemini');
@@ -92,6 +104,8 @@ export const useChat = () => {
       throw error;
     }
   }, [selectSession]);
+
+
 
   const sendMessage = useCallback(async (input: string) => {
     if (!input || isLoading) return;
@@ -136,6 +150,8 @@ export const useChat = () => {
     }
   }, [selectedSession, isLoading, createNewChat]);
 
+
+  
   return {
     sessions,
     selectedSession,
