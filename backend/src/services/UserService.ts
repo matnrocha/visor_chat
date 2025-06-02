@@ -13,7 +13,7 @@ export class UserService {
     updates: Partial<Pick<User, 'name' | 'email'>>
   ): Promise<User | null> {
     return this.userRepository.update(id, updates);
-  }
+  } 
 
   async deleteUserAccount(id: string): Promise<boolean> {
     return this.userRepository.delete(id);

@@ -27,12 +27,10 @@ export class ChatService {
         return this.sessionRepository.create(session);
       }
 
-    // List all sessions for user
     async listUserSessions(userId: string): Promise<ChatSession[]> {
         return this.sessionRepository.findByUserId(userId);
     }
 
-    // Get session details
     async getSession(sessionId: string, userId: string): Promise<ChatSession> {
         const session = await this.sessionRepository.findById(sessionId);
         if (!session || session.userId !== userId) {
@@ -65,7 +63,7 @@ export class ChatService {
             throw new Error('Session not found or access denied');
         }
 
-        // 1. Salva mensagem do usuário
+        //Salva mensagem do usuário
         const userMessage = new Message(
         '',
         sessionId,
@@ -75,22 +73,22 @@ export class ChatService {
         );
         await this.messageRepository.create(userMessage);
 
-        // 2. Obtém histórico da conversa
+        //Obtém histórico da conversa
         const previousMessages = await this.messageRepository.findBySessionId(sessionId);
         
-        // 3. Formata mensagens para o LLM
+        //Formata mensagens para o LLM
         const chatHistory = previousMessages.map(msg => ({
         role: msg.role as 'user' | 'model',
         content: msg.content
         }));
 
-        // 4. Obtém resposta do LLM
+        //Obtém resposta do LLM
         const llmResponse = await this.llm.getChatResponse([
         ...chatHistory,
         { role: 'user', content }
         ]);
 
-        // 5. Salva resposta do modelo
+        //Salva resposta do modelo
         const modelMessage = new Message(
         '',
         sessionId,

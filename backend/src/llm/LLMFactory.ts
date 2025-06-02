@@ -1,7 +1,6 @@
 import { ILLM } from "./ILLM";
 import { LLMProvider } from "./types"
 import { GeminiLLM } from "./implementations/GeminiLLM";
-// import { OpenAiLLM } from "./implementations/OpenAiLLM";
 
 export class LLMFactory {
   static create(provider: LLMProvider, apiKey?: string): ILLM {
@@ -14,8 +13,6 @@ export class LLMFactory {
     switch (provider) {
       case LLMProvider.GEMINI:
         return new GeminiLLM(resolvedKey);
-      //case LLMProvider.OPENAI:
-        //return new OpenAiLLM(resolvedKey);
       default:
         throw new Error(`Unsupported LLM provider: ${provider}`);
     }

@@ -1,5 +1,3 @@
-// tests/chat.test.ts
-
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -30,7 +28,6 @@ afterEach(async () => {
 
 describe('Chat routes', () => {
   beforeEach(async () => {
-    // Register and login user before each test suite that needs auth
     await request(app.express)
       .post('/api/auth/register')
       .send({ name: 'User', email: 'test@example.com', password: 'senha123' });
@@ -54,7 +51,6 @@ describe('Chat routes', () => {
   });
 
   it('should send and receive messages in a session', async () => {
-    // First, create a session
     const createRes = await request(app.express)
       .post('/api/sessions')
       .set('Authorization', `Bearer ${token}`)

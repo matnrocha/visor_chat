@@ -3,7 +3,9 @@ import { UserModel } from '../models/UserModel';
 
 export class UserRepository {
   async findByEmail(email: string): Promise<User | null> {
+
     const user = await UserModel.findOne({ email });
+
     return user ? new User(
       user._id.toString(),
       user.name,
@@ -15,11 +17,13 @@ export class UserRepository {
   }
 
   async create(user: User): Promise<User> {
+
     const newUser = await UserModel.create({
       name: user.name,
       email: user.email,
       password: user.password
     });
+
     return new User(
       newUser._id.toString(),
       newUser.name,
@@ -31,8 +35,10 @@ export class UserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
+
     const user = await UserModel.findById(id);
     if (!user) return null;
+
     return new User(
       user._id.toString(),
       user.name,
@@ -44,11 +50,13 @@ export class UserRepository {
   }
 
   async update(id: string, updates: Partial<User>): Promise<User | null> {
+
     const user = await UserModel.findByIdAndUpdate(
       id,
       { $set: updates, updatedAt: new Date() },
       { new: true }
     );
+
     return user ? new User(
       user._id.toString(),
       user.name,
@@ -60,6 +68,7 @@ export class UserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
+    
     const result = await UserModel.deleteOne({ _id: id });
     return result.deletedCount > 0;
   }

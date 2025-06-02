@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async logout(token: string): Promise<void> {
-    // Implementação básica - tirar token no front
+    // tirar token no front
     console.log(`Token invalidated: ${token}`);
   }
 }

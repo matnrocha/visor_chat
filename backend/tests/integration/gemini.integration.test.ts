@@ -4,7 +4,6 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-// Configuração inicial
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL_NAME = 'gemini-1.5-flash';
 
@@ -16,11 +15,9 @@ async function testGeminiIntegration() {
 
     console.log('Iniciando teste do Gemini...');
     
-    // 1. Inicializa o cliente
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-    // 2. Teste de geração simples
     console.log('\nTeste de geração de texto simples:');
     const prompt = "Explique como funciona o TypeScript em 1 parágrafo";
     const result = await model.generateContent(prompt);
@@ -30,7 +27,6 @@ async function testGeminiIntegration() {
     console.log('Pergunta:', prompt);
     console.log('Resposta:', text);
 
-    // 3. Teste de chat com histórico
     console.log('\nTeste de conversa com histórico:');
     const chat = model.startChat({
       history: [

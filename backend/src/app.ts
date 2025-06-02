@@ -3,10 +3,9 @@ import cors from 'cors';
 import authRouter from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 import { chatRouter } from './routes/chatRoutes';
-// import { errorHandler } from './middlewares/errorHandler';
-// import { notFoundHandler } from './middlewares/notFoundHandler';
 import { connectToDatabase } from './config/database';
 import { modelRouter } from './routes/modelRoutes';
+import { setupSwagger } from './config/swagger';
 
 class App {
   public express: express.Application;
@@ -14,8 +13,8 @@ class App {
   constructor() {
     this.express = express();
     this.setupMiddlewares();
+    setupSwagger(this.express);
     this.setupRoutes();
-    this.setupErrorHandling();
   }
 
   private setupMiddlewares(): void {
@@ -29,11 +28,6 @@ class App {
     this.express.use('/api/users', userRouter);
     this.express.use('/api/sessions', chatRouter);
     this.express.use('/api/models', modelRouter);
-  }
-
-  private setupErrorHandling(): void {
-    // this.express.use(notFoundHandler);
-    // this.express.use(errorHandler);
   }
 
   public async initialize(): Promise<void> {

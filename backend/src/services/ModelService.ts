@@ -31,7 +31,7 @@ export class ModelService {
 
         const availableModels = this.getAvailableModels();
         if (!availableModels.some(m => m.id === modelType)) {
-            throw new Error(`Modelo ${modelType} não disponível ou não configurado`);
+            throw new Error(`Model ${modelType} is unavailable or not configured`);
         }
 
         return this.sessionRepository.updateModel(sessionId, modelType);

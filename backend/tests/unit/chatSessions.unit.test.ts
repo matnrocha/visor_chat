@@ -1,5 +1,3 @@
-// tests/chatSession.test.ts
-
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -13,7 +11,6 @@ beforeAll(async () => {
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
 
-  // Cria usuário e pega token
   authToken = await createTestUserAndGetToken();
 });
 
@@ -27,7 +24,7 @@ afterEach(async () => {
   for (const key in collections) {
     await collections[key].deleteMany({});
   }
-  // Recria usuário e token após apagar coleções
+  
   authToken = await createTestUserAndGetToken();
 });
 

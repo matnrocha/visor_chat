@@ -25,7 +25,6 @@ export class ChatController {
     }
   };
 
-  // List all sessions for current user
   listSessions = async (req: Request, res: Response): Promise<void> => {
     try {
       const sessions = await this.chatService.listUserSessions(req.userId!);
@@ -45,7 +44,8 @@ export class ChatController {
     }
   };
 
-  // Get session details
+
+  
   getSession = async (req: Request, res: Response): Promise<void> => {
     try {
       const session = await this.chatService.getSession(
@@ -68,7 +68,8 @@ export class ChatController {
     }
   };
 
-  // Update session title
+
+  
   updateSessionTitle = async (req: Request, res: Response): Promise<void> => {
     try {
       const success = await this.chatService.updateSessionTitle(
@@ -90,7 +91,8 @@ export class ChatController {
     }
   };
 
-  // Delete session
+
+  
   deleteSession = async (req: Request, res: Response): Promise<void> => {
     try {
       const success = await this.chatService.deleteSession(
