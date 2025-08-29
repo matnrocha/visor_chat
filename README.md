@@ -1,6 +1,6 @@
 # Project Overview
 
-This project is a full-stack chat application developed for the Visor.ai technical challenge. It delivers messaging with AI-generated responses and includes:
+This project is a full-stack chat application. It delivers messaging with AI-generated responses and includes:
 
 - Secure user authentication with JWT and password hashing;
 
@@ -90,8 +90,8 @@ The application emphasizes scalability, testability, and clean code practices, l
 
 1. Clone the repository:
    ```bash
-    git clone https://github.com/matnrocha/visor_ai_challenge.git
-    cd visor_ai_challenge
+    git clone https://github.com/matnrocha/visor_chat.git
+    cd visor_chat
    ```
 2. Configure the environment variables in both the backend and the frontend.
     ```bash
