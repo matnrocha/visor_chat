@@ -8,7 +8,7 @@ export class GeminiLLM implements ILLM {
 
   constructor(
     apiKey: string,
-    model: string = 'gemini-1.5-flash'
+    model: string = 'gemini-3.8-flash'
   ) {
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.modelName = model;
