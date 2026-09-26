@@ -14,6 +14,30 @@ This project is a full-stack chat application. It delivers messaging with AI-gen
 
 The application emphasizes scalability, testability, and clean code practices, laying a solid foundation for long-term growth and maintainability.
 
+## Application Features
+
+Here are some of the main features and screens of **Visor Chat** in action:
+
+### 1. Secure Authentication
+* **Login & Registration:** Robust system with password hashing and JWT-based authentication to ensure user data security.
+
+  ![Login Screen](./assets/images/login.png)
+
+### 2. Clean and Responsive Interface
+* **Modern Design:** Interface built with **Tailwind CSS** and reusable **shadcn/ui** components, providing a smooth experience across both desktop and mobile devices.
+
+  ![Chat Interface](./assets/images/chat-interface.png)
+
+### 3. Dynamic Chat History
+* **Chat Management:** Users can seamlessly manage their conversation flow, allowing them to **delete chats** and **modify chat titles** intuitively.
+
+  ![Chat Management](./assets/images/sidebar-chats.png)
+
+### 4. Intelligent AI Integration (Gemini)
+* **Contextual Awareness:** The assistant utilizes previous message history to maintain conversational context, delivering more accurate and natural responses.
+
+  ![AI Conversation](./assets/images/ai-response.png)
+
 
 
 ## Application explanation
